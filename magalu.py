@@ -142,11 +142,12 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         print(html)
         # screenshot an HTML string (css is optional)
         hti.screenshot(html_str=html, save_as=f'{today}.png', size=(899, 1599))
+        await context.bot.send_photo(chat_id=update.effective_chat.id,filename='magalu.png',photo=open(f"{today}.png", "rb"))
     except Exception as error:
         print("Erro ao gerar imagem", error)
         await context.bot.send_message(chat_id=update.effective_chat.id, text="Erro ao gerar imagem!")
-        deleteTempFiles(today)
     finally:
+        deleteTempFiles(today)
         driver.quit()
     
-    await context.bot.send_photo(chat_id=update.effective_chat.id,filename='magalu.png',photo=open(f"{today}.png", "rb"))
+    

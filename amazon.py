@@ -21,6 +21,11 @@ def deleteTempFiles(date_time):
     else:
         print("The file does not exist") 
 
+    if os.path.exists(f"image-{date_time}.png"):
+        os.remove(f"image-{date_time}.png")
+    else:
+        print("The file does not exist") 
+
 async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id, text="Processando...")
     print("webscrapper is running...")
@@ -29,15 +34,14 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         options = Options()
         options.add_argument("-headless")
-        #options.add_argument("--width=1920")
-        #options.add_argument("--height=1080")
+        options.add_argument("--width=640")
+        options.add_argument("--height=480")
         driver = webdriver.Chrome(options=options)
         
         url = update.message.text.split()[1]
         driver.get(url)
 
-        #WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'landingImage')))
-        time.sleep(3)
+        WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'landingImage')))
         element = driver.find_element(By.XPATH, '//*[@id="landingImage"]')
         element.screenshot(f'image-{today}.png')
         image_src = f'{os.getcwd()}/image-{today}.png'
@@ -140,11 +144,12 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         print(html)
         # screenshot an HTML string (css is optional)
         hti.screenshot(html_str=html, save_as=f'{today}.png', size=(899, 1599))
+        await context.bot.send_photo(chat_id=update.effective_chat.id,filename=f"{today}.png",photo=open(f"{today}.png", "rb"))
     except Exception as error:
         print("Erro ao gerar imagem", error)
         await context.bot.send_message(chat_id=update.effective_chat.id, text="Erro ao gerar imagem!")
-        deleteTempFiles(today)
     finally:
+        deleteTempFiles(today)
         driver.quit()
     
-    await context.bot.send_photo(chat_id=update.effective_chat.id,filename=f"{today}.png",photo=open(f"{today}.png", "rb"))
+    
