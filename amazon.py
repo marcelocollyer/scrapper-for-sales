@@ -28,23 +28,19 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
   
     try:
         options = Options()
-        options.add_argument("-headless")
-        options.add_argument("--width=2560")
-        options.add_argument("--height=1440")
+        #options.add_argument("-headless")
         driver = webdriver.Firefox(options=options)
         
         url = update.message.text.split()[1]
         driver.get(url)
 
         try:
-            WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'onetrust-accept-btn-handler'))).click()
-            WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="sticky-container"]/div[2]/div/div/div[1]/div[1]/div[1]/div[2]/img'))).click()
-            
+            WebDriverWait(driver, 2).until(EC.presence_of_element_located((By.XPATH, '//*[@id="sticky-container"]/div[2]/div/div/div[1]/div[1]/div[1]/div[2]/img'))).click()
         except Exception as error:
             print("Error trying to click", error)
 
-        element = driver.find_element(By.XPATH, '//*[@id="sticky-container"]/div[2]/div/div/div[1]/div[1]/div[2]')
-        element.screenshot(f'image-{today}.png')
+        img = driver.find_element(By.XPATH, '//*[@id="sticky-container"]/div[2]/div/div/div[1]/div[1]/div[2]/div/img')
+        img.screenshot(f'image-{today}.png')
         image_src = f'{os.getcwd()}/image-{today}.png'
 
         element = driver.find_element(By.XPATH, '//*[@id="sticky-container"]/div[2]/div/div/div[2]/div/h1')
