@@ -28,6 +28,8 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         options = Options()
         options.add_argument("-headless")
+        options.add_argument("--width=1920")
+        options.add_argument("--height=1080")
         driver = webdriver.Firefox(options=options)
         
         url = update.message.text.split()[1]
@@ -67,7 +69,7 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     margin: 0px 0px 0px 0px;
                     height: 1599px;
                     width: 899px;"""+ f"""
-                    background-image: url("{os.getcwd()}/magalu_background.jpg");"""+"""
+                    background-image: url("{os.getcwd()}/background.jpg");"""+"""
                 }
 
                 .product-div {

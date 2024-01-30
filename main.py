@@ -3,6 +3,7 @@ import logging
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
 import magalu
 import natura
+import amazon
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -15,6 +16,7 @@ def main():
     
     application.add_handler(CommandHandler('mag', magalu.handler))
     application.add_handler(CommandHandler('nat', natura.handler))
+    application.add_handler(CommandHandler('ama', amazon.handler))
     
     application.run_polling()
 

@@ -1,5 +1,5 @@
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -28,25 +28,24 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
   
     try:
         options = Options()
-        #options.add_argument("-headless")
-        driver = webdriver.Firefox(options=options)
+        options.add_argument("-headless")
+        #options.add_argument("--width=1920")
+        #options.add_argument("--height=1080")
+        driver = webdriver.Chrome(options=options)
         
         url = update.message.text.split()[1]
         driver.get(url)
 
-        try:
-            WebDriverWait(driver, 2).until(EC.presence_of_element_located((By.XPATH, '//*[@id="sticky-container"]/div[2]/div/div/div[1]/div[1]/div[1]/div[2]/img'))).click()
-        except Exception as error:
-            print("Error trying to click", error)
-
-        img = driver.find_element(By.XPATH, '//*[@id="sticky-container"]/div[2]/div/div/div[1]/div[1]/div[2]/div/img')
-        img.screenshot(f'image-{today}.png')
+        #WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'landingImage')))
+        time.sleep(3)
+        element = driver.find_element(By.XPATH, '//*[@id="landingImage"]')
+        element.screenshot(f'image-{today}.png')
         image_src = f'{os.getcwd()}/image-{today}.png'
 
-        element = driver.find_element(By.XPATH, '//*[@id="sticky-container"]/div[2]/div/div/div[2]/div/h1')
+        element = driver.find_element(By.XPATH, '//*[@id="productTitle"]')
         productTitle = element.get_attribute('innerHTML')
         
-        element = driver.find_element(By.XPATH, '//*[@id="sticky-container"]/div[2]/div/div/div[2]/div/div[3]')
+        element = driver.find_element(By.XPATH, '//*[@id="corePriceDisplay_desktop_feature_div"]')
         element.screenshot(f'price-{today}.png')
         price_src = f'{os.getcwd()}/price-{today}.png'
 
@@ -68,7 +67,7 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     margin: 0px 0px 0px 0px;
                     height: 1599px;
                     width: 899px;"""+ f"""
-                    background-image: url("{os.getcwd()}/default_background.jpg");"""+"""
+                    background-image: url("{os.getcwd()}/background.jpg");"""+"""
                 }
 
                 .product-div {
