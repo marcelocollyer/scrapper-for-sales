@@ -67,7 +67,7 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     margin: 0px 0px 0px 0px;
                     height: 1599px;
                     width: 899px;"""+ f"""
-                    background-image: url("{os.getcwd()}/default_background.jpg");"""+"""
+                    background-image: url("{os.getcwd()}/magalu_background.jpg");"""+"""
                 }
 
                 .product-div {
