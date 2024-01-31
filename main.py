@@ -13,9 +13,6 @@ logging.basicConfig(
 
 def main():
 
-    folder_path = os.getcwd().replace("\\", "\\\\")
-    print("OKOKOKOK", folder_path)
-
     application = ApplicationBuilder().token('6481858651:AAGY3oOoJ7XO3iMAPIrEPe5MTQlYw8VYWq4').build()
     
     application.add_handler(CommandHandler('mag', magalu.handler))
