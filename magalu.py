@@ -40,6 +40,8 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             driver.find_element(By.CSS_SELECTOR, '[data-testid="button-message-box"]').click()
         except Exception as error:
             print("Error trying to click", error)
+        
+        folder_path = os.getcwd()
 
         element = driver.find_element(By.CSS_SELECTOR, '[data-testid="heading-product-title"]')
         productTitle = element.get_attribute('innerHTML')
@@ -47,11 +49,15 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         img = driver.find_element(By.CSS_SELECTOR, '[data-testid="image-selected-thumbnail"]')
         image_src = img.get_attribute('src')
 
-        element = driver.find_element(By.CSS_SELECTOR, '[data-testid="mod-productprice"]')
-        element.screenshot(f'price-{today}.png')
-        price_src = f'{os.getcwd()}/price-{today}.png'
+        price_src = ''
+        if 'sp' not in update.message.text:
+            element = driver.find_element(By.CSS_SELECTOR, '[data-testid="mod-productprice"]')
+            element.screenshot(f'price-{today.timestamp()}.png')
+            price_src = f'{folder_path}/price-{today.timestamp()}.png'
 
         hti = Html2Image()
+
+        folder_path = folder_path.replace("\\", "\\\\")
 
         html = """
         <!DOCTYPE html>
@@ -69,7 +75,7 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     margin: 0px 0px 0px 0px;
                     height: 1599px;
                     width: 899px;"""+ f"""
-                    background-image: url("{os.getcwd()}/background.jpg");"""+"""
+                    background-image: url('{folder_path}/background.jpg');"""+"""
                 }
 
                 .product-div {
@@ -124,7 +130,13 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     margin-left: auto;
                     margin-right: auto;
                 }
-            </style>""" + f"""
+            </style>"""
+        
+        img_tag = ''
+        if price_src != '':
+            img_tag = f"<img src='{price_src}' class=product-img width='750px'>"
+        
+        html += f"""
             <body class="body">
                 <div class="internal-div">
                 <div class="product-div">
@@ -132,22 +144,22 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     <h1 class="title">{productTitle}</h1>
                 </div>
                 <div class="price-div">
-                    <p class="price"><img src="{price_src}" class=product-img width="750px"></p>  
+                    <p class="price">{img_tag}</p>  
                 </div>
                 </div>
-
             </body>
         </html>"""
 
         print(html)
         # screenshot an HTML string (css is optional)
-        hti.screenshot(html_str=html, save_as=f'{today}.png', size=(899, 1599))
-        await context.bot.send_photo(chat_id=update.effective_chat.id,filename='magalu.png',photo=open(f"{today}.png", "rb"))
+        path = f'{today.timestamp()}.png'
+        hti.screenshot(html_str=html, save_as=path, size=(899, 1599))
+        await context.bot.send_photo(chat_id=update.effective_chat.id,filename='magalu.png',photo=open(path, "rb"))
     except Exception as error:
         print("Erro ao gerar imagem", error)
         await context.bot.send_message(chat_id=update.effective_chat.id, text="Erro ao gerar imagem!")
     finally:
-        deleteTempFiles(today)
+        deleteTempFiles(today.timestamp())
         driver.quit()
     
     

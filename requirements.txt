@@ -34,7 +34,6 @@ packaging==23.1
 pandas==2.1.4
 Pillow==10.0.0
 pycparser==2.21
-Pygments @ file:///private/tmp/pygments-20230630-5530-1s8evfm/Pygments-2.15.1
 pyluach==2.2.0
 PyMeeus==0.5.12
 pyparsing==3.1.0
@@ -55,8 +54,6 @@ soupsieve==2.5
 threadpoolctl==3.1.0
 trio==0.24.0
 trio-websocket==0.11.1
-tvdatafeed @ git+https://github.com/asimov-academy/Asimov_TV_connector.git@7aab5d06d74e835befff81f0979316f39cc5eb89
-typing_extensions @ file:///private/tmp/python-typing-extensions-20230628-5477-70ftfq/typing_extensions-4.7.0/dist/typing_extensions-4.7.0-py3-none-any.whl
 tzdata==2023.4
 urllib3==2.1.0
 webencodings==0.5.1

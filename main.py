@@ -4,6 +4,7 @@ from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
 import magalu
 import natura
 import amazon
+import os
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -11,6 +12,9 @@ logging.basicConfig(
 )
 
 def main():
+
+    folder_path = os.getcwd().replace("\\", "\\\\")
+    print("OKOKOKOK", folder_path)
 
     application = ApplicationBuilder().token('6481858651:AAGY3oOoJ7XO3iMAPIrEPe5MTQlYw8VYWq4').build()
     
