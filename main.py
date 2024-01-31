@@ -4,7 +4,6 @@ from telegram.ext import ApplicationBuilder, CommandHandler
 import magalu
 import natura
 import amazon
-import os
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
