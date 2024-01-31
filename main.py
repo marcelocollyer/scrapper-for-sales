@@ -1,6 +1,6 @@
 
 import logging
-from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
+from telegram.ext import ApplicationBuilder, CommandHandler
 import magalu
 import natura
 import amazon
