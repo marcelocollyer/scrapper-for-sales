@@ -20,6 +20,4 @@ def main():
     
     application.run_polling()
 
-
-
 main()

@@ -33,8 +33,8 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         options = Options()
         options.add_argument("-headless")
-        options.add_argument("--width=640")
-        options.add_argument("--height=480")
+        options.add_argument("--width=1024")
+        options.add_argument("--height=768")
         driver = webdriver.Chrome(options=options)
         
         url = update.message.text.split()[1]
@@ -52,9 +52,10 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         price_src = ''
         try:
-            element = driver.find_element(By.XPATH, '//*[@id="corePriceDisplay_desktop_feature_div"]')
-            element.screenshot(f'price-{today.timestamp()}.png')
-            price_src = f'{folder_path}/price-{today.timestamp()}.png'
+            if 'sp' not in update.message.text:
+                element = driver.find_element(By.XPATH, '//*[@id="corePriceDisplay_desktop_feature_div"]')
+                element.screenshot(f'price-{today.timestamp()}.png')
+                price_src = f'{folder_path}/price-{today.timestamp()}.png'
         except Exception as error:
             print("Error finding price", error)
         
