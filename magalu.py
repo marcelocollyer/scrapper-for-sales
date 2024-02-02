@@ -1,5 +1,5 @@
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -18,20 +18,19 @@ def deleteTempFiles(date_time):
     if os.path.exists(f"price-{date_time}.png"):
         os.remove(f"price-{date_time}.png")
     else:
-        print("The file does not exist") 
+        print("The file does not exist")
 
 async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id, text="Processando...")
     print("webscrapper is running...")
     today = datetime.now()
-  
+
     try:
         options = Options()
         options.add_argument("-headless")
-        options.add_argument("--width=1920")
-        options.add_argument("--height=1080")
-        driver = webdriver.Firefox(options=options)
-        
+        options.add_argument("--window-size=1920,1080")
+        driver = webdriver.Chrome(options=options)
+
         url = update.message.text.split()[1]
         driver.get(url)
 
@@ -40,12 +39,12 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             driver.find_element(By.CSS_SELECTOR, '[data-testid="button-message-box"]').click()
         except Exception as error:
             print("Error trying to click", error)
-        
+
         folder_path = os.getcwd()
 
         element = driver.find_element(By.CSS_SELECTOR, '[data-testid="heading-product-title"]')
         productTitle = element.get_attribute('innerHTML')
-        
+
         img = driver.find_element(By.CSS_SELECTOR, '[data-testid="image-selected-thumbnail"]')
         image_src = img.get_attribute('src')
 
@@ -105,7 +104,6 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
                 .price {
                     text-align: center;
-                    font-size: 70px;
                     padding-left: 50px;
                 }
 
@@ -131,11 +129,11 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     margin-right: auto;
                 }
             </style>"""
-        
+
         img_tag = ''
         if price_src != '':
             img_tag = f"<img src='{price_src}' class=product-img width='750px'>"
-        
+
         html += f"""
             <body class="body">
                 <div class="internal-div">
@@ -161,5 +159,3 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     finally:
         deleteTempFiles(today.timestamp())
         driver.quit()
-    
-    

@@ -29,7 +29,7 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id, text="Processando...")
     print("webscrapper is running...")
     today = datetime.now()
-  
+
     try:
         options = Options()
         options.add_argument("-headless")

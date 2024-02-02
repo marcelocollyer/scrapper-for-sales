@@ -8,6 +8,7 @@ from telegram import Update
 from telegram.ext import ContextTypes
 import os
 from datetime import datetime
+import time
 
 def deleteTempFiles(date_time):
     if os.path.exists(f"{date_time}.png"):
@@ -18,44 +19,37 @@ def deleteTempFiles(date_time):
     if os.path.exists(f"price-{date_time}.png"):
         os.remove(f"price-{date_time}.png")
     else:
-        print("The file does not exist") 
+        print("The file does not exist")
 
     if os.path.exists(f"image-{date_time}.png"):
         os.remove(f"image-{date_time}.png")
     else:
-        print("The file does not exist")         
+        print("The file does not exist")
 
 async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id, text="Processando...")
     print("webscrapper is running...")
     today = datetime.now()
-  
+
     try:
         options = Options()
         options.add_argument("-headless")
-        options.add_argument("--width=1920")
+        options.add_argument("--width=1366")
         options.add_argument("--height=1080")
         driver = webdriver.Firefox(options=options)
-        
+
         url = update.message.text.split()[1]
         driver.get(url)
 
-        try:
-            WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'onetrust-accept-btn-handler'))).click()
-            WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="sticky-container"]/div[2]/div/div/div[1]/div[1]/div[1]/div[2]/img'))).click()
-            
-        except Exception as error:
-            print("Error trying to click", error)
-
         folder_path = os.getcwd().replace("\\", "\\\\")
 
-        element = driver.find_element(By.XPATH, '//*[@id="sticky-container"]/div[2]/div/div/div[1]/div[1]/div[2]')
+        element = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="sticky-container"]/div[2]/div/div/div[1]/div[1]/div[2]')))
         element.screenshot(f'image-{today.timestamp()}.png')
         image_src = f'{folder_path}/image-{today.timestamp()}.png'
 
         element = driver.find_element(By.XPATH, '//*[@id="sticky-container"]/div[2]/div/div/div[2]/div/h1')
         productTitle = element.get_attribute('innerHTML')
-        
+
         price_src = ''
         if 'sp' not in update.message.text:
             element = driver.find_element(By.XPATH, '//*[@id="sticky-container"]/div[2]/div/div/div[2]/div/div[3]')
@@ -136,11 +130,11 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     margin-right: auto;
                 }
             </style>"""
-        
+
         img_tag = ''
         if price_src != '':
             img_tag = f"<img src='{price_src}' class=product-img width='750px'>"
-        
+
         html += f"""
             <body class="body">
                 <div class="internal-div">
@@ -164,7 +158,5 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         print("Erro ao gerar imagem", error)
         await context.bot.send_message(chat_id=update.effective_chat.id, text="Erro ao gerar imagem!")
     finally:
-        deleteTempFiles(today.timestamp())
+        #deleteTempFiles(today.timestamp())
         driver.quit()
-    
-    
