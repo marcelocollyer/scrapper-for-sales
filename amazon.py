@@ -40,7 +40,7 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         folder_path = os.getcwd().replace("\\", "\\\\")
 
-        WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'landingImage')))
+        WebDriverWait(driver, 100).until(EC.presence_of_element_located((By.ID, 'landingImage')))
         element = driver.find_element(By.XPATH, '//*[@id="landingImage"]')
         element.screenshot(f'image-{today.timestamp()}.png')
         image_src = f'{folder_path}/image-{today.timestamp()}.png'

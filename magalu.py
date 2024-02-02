@@ -35,7 +35,7 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         driver.get(url)
 
         try:
-            driver.find_element(By.CLASS_NAME, 'text-button-cookie').click()
+            WebDriverWait(driver, 100).until(EC.presence_of_element_located((By.CLASS_NAME, 'text-button-cookie'))).click()
             driver.find_element(By.CSS_SELECTOR, '[data-testid="button-message-box"]').click()
         except Exception as error:
             print("Error trying to click", error)
