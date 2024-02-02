@@ -1,5 +1,5 @@
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -34,9 +34,8 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         options = Options()
         options.add_argument("-headless")
-        options.add_argument("--width=1366")
-        options.add_argument("--height=1080")
-        driver = webdriver.Firefox(options=options)
+        options.add_argument("--window-size=1920,1400")
+        driver = webdriver.Chrome(options=options)
 
         url = update.message.text.split()[1]
         driver.get(url)
@@ -158,5 +157,5 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         print("Erro ao gerar imagem", error)
         await context.bot.send_message(chat_id=update.effective_chat.id, text="Erro ao gerar imagem!")
     finally:
-        #deleteTempFiles(today.timestamp())
+        deleteTempFiles(today.timestamp())
         driver.quit()
