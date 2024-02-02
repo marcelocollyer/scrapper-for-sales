@@ -18,12 +18,12 @@ def deleteTempFiles(date_time):
     if os.path.exists(f"price-{date_time}.png"):
         os.remove(f"price-{date_time}.png")
     else:
-        print("The file does not exist") 
+        print("The file does not exist")
 
     if os.path.exists(f"image-{date_time}.png"):
         os.remove(f"image-{date_time}.png")
     else:
-        print("The file does not exist") 
+        print("The file does not exist")
 
 async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id, text="Processando...")
@@ -33,10 +33,8 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         options = Options()
         options.add_argument("-headless")
-        options.add_argument("--width=1024")
-        options.add_argument("--height=768")
         driver = webdriver.Chrome(options=options)
-        
+
         url = update.message.text.split()[1]
         driver.get(url)
 
@@ -49,7 +47,7 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         element = driver.find_element(By.XPATH, '//*[@id="productTitle"]')
         productTitle = element.get_attribute('innerHTML')
-        
+
         price_src = ''
         try:
             if 'sp' not in update.message.text:
@@ -58,7 +56,7 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 price_src = f'{folder_path}/price-{today.timestamp()}.png'
         except Exception as error:
             print("Error finding price", error)
-        
+
         hti = Html2Image()
 
         html = """
@@ -132,12 +130,12 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     margin-left: auto;
                     margin-right: auto;
                 }
-            </style>""" 
-        
+            </style>"""
+
         image_tag = ''
         if price_src != '':
             image_tag = f"""<img src="{price_src}" class=product-img width="750px">"""
-        
+
         html += f"""
             <body class="body">
                 <div class="internal-div">
@@ -163,5 +161,3 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     finally:
         deleteTempFiles(today.timestamp())
         driver.quit()
-    
-    
