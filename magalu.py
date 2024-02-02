@@ -127,6 +127,7 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     display: block;
                     margin-left: auto;
                     margin-right: auto;
+                    max-width: 820px;
                 }
             </style>"""
 

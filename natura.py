@@ -103,7 +103,6 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
                 .price {
                     text-align: center;
-                    font-size: 70px;
                     padding-left: 50px;
                 }
 
@@ -127,6 +126,7 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     display: block;
                     margin-left: auto;
                     margin-right: auto;
+                    max-width: 820px;
                 }
             </style>"""
 
