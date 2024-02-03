@@ -120,6 +120,10 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     font-size: 45px;
                     text-align: left;
                     color: #4a4a4a;
+                    overflow: hidden;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 4;
+                    -webkit-box-orient: vertical;
                 }
 
                 .product-img {
