@@ -1,0 +1,35 @@
+name: Docker Build and Push
+
+on:
+  push:
+    branches:
+      - main  # Modify to your main branch name
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      
+    - name: Login to Docker Hub
+      run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login --username marcelocollyer --password-stdin
+      
+    - name: Build Docker image
+      run: docker build -t marcelocollyer/sales-scrapper-py:latest .
+      
+    - name: Push Docker image
+      run: docker push marcelocollyer/sales-scrapper-py:latest
+
+    - name: SSH into EC2 instance and update Docker image
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          docker pull marcelocollyer/sales-scrapper-py:latest
+          docker stop sales-scrapper-py || true
+          docker rm sales-scrapper-py || true
+          docker run -d --rm --name sales-scrapper-py -t marcelocollyer/sales-scrapper-py:latest
