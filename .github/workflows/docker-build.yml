@@ -21,15 +21,3 @@ jobs:
       
     - name: Push Docker image
       run: docker push marcelocollyer/sales-scrapper-py:latest
-
-    - name: SSH into EC2 instance and update Docker image
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USERNAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          docker pull marcelocollyer/sales-scrapper-py:latest
-          docker stop sales-scrapper-py || true
-          docker rm sales-scrapper-py || true
-          docker run -d --rm --name sales-scrapper-py -t marcelocollyer/sales-scrapper-py:latest
