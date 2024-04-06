@@ -16,6 +16,10 @@ FROM python:3.11.9-slim
 # Set working directory
 WORKDIR /app
 
+RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb &
+    dpkg -i google-chrome-stable_current_amd64.deb &
+    rm google-chrome-stable_current_amd64.deb 
+
 # Copy the Python script from the build stage
 COPY --from=builder /app/ .
 COPY --from=builder /usr/local/lib/python3.11/site-packages/ /usr/local/lib/python3.11/site-packages/
