@@ -27,7 +27,9 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     try:
         options = Options()
-        options.add_argument("-headless")
+        options.add_argument('--headless')
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-dev-shm-usage')
         options.add_argument("--window-size=1920,1080")
         driver = webdriver.Chrome(options=options)
 
@@ -156,6 +158,7 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         print(html)
         # screenshot an HTML string (css is optional)
         path = f'{today.timestamp()}.png'
+        hti = Html2Image(custom_flags=['--no-sandbox'])
         hti.screenshot(html_str=html, save_as=path, size=(899, 1599))
         await context.bot.send_photo(chat_id=update.effective_chat.id,filename='magalu.png',photo=open(path, "rb"))
     except Exception as error:
