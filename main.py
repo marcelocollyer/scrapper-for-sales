@@ -1,5 +1,6 @@
 
 import logging
+import os
 from telegram.ext import ApplicationBuilder, CommandHandler
 import magalu
 import natura
@@ -12,7 +13,9 @@ logging.basicConfig(
 
 def main():
 
-    application = ApplicationBuilder().token('6481858651:AAGY3oOoJ7XO3iMAPIrEPe5MTQlYw8VYWq4').build()
+    bot_token = os.environ['TELEGRAM_BOT_TOKEN']
+
+    application = ApplicationBuilder().token(bot_token).build()
     
     application.add_handler(CommandHandler('mag', magalu.handler))
     application.add_handler(CommandHandler('nat', natura.handler))
