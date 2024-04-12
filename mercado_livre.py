@@ -8,28 +8,23 @@ from telegram import Update
 from telegram.ext import ContextTypes
 import os
 from datetime import datetime
-
 def deleteTempFiles(date_time):
     if os.path.exists(f"{date_time}.png"):
         os.remove(f"{date_time}.png")
     else:
         print("The file does not exist")
-
     if os.path.exists(f"price-{date_time}.png"):
         os.remove(f"price-{date_time}.png")
     else:
         print("The file does not exist")
-
     if os.path.exists(f"image-{date_time}.png"):
         os.remove(f"image-{date_time}.png")
     else:
         print("The file does not exist")
-
 async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id, text="Processando...")
     print("webscrapper is running...")
     today = datetime.now()
-
     try:
         options = Options()
         options.add_argument('--headless')
@@ -37,7 +32,6 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         options.add_argument('--disable-dev-shm-usage')
         options.add_argument("--window-size=1920,1400")
         driver = webdriver.Chrome(options=options)
-
         url = update.message.text.split()[1]
         driver.get(url)
 
@@ -61,7 +55,6 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             print("Error finding price", error)
 
         hti = Html2Image()
-
         html = """
         <!DOCTYPE html>
         <html lang="en">
@@ -80,12 +73,10 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     width: 899px;"""+ f"""
                     background-image: url("{folder_path}/background.jpg");"""+"""
                 }
-
                 .product-div {
                     padding: 150px 5px 5px 5px;
                     min-height: 680px;
                 }
-
                 .price-div {
                     
                     box-sizing: border-box;
@@ -98,19 +89,16 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     text-size-adjust: 100%;
                     width: auto;
                 }
-
                 .old-price-div {
                     text-align: center;
                     font-size: 25px;
                     margin: 0px 0px 0px 0px;
                     color: rgb(86, 89, 89);
                 }
-
                 .price {
                     text-align: center;
                     padding-left: 50px;
                 }
-
                 .old-price {
                     text-decoration: line-through;
                 }
@@ -130,7 +118,6 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     -webkit-line-clamp: 4;
                     -webkit-box-orient: vertical;
                 }
-
                 .product-img {
                     /* Background pattern from Toptal Subtle Patterns */
                     display: block;
@@ -155,7 +142,6 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     <p class="price">{image_tag}</p>  
                 </div>
                 </div>
-
             </body>
         </html>"""
 
