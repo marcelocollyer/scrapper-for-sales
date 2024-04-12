@@ -83,7 +83,7 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
                 .product-div {
                     padding: 150px 5px 5px 5px;
-                    min-height: 700px;
+                    min-height: 680px;
                 }
 
                 .price-div {
