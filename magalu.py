@@ -60,9 +60,12 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             element.screenshot(f'price-{today.timestamp()}.png')
             price_src = f'{folder_path}/price-{today.timestamp()}.png'
 
-            productPriceBefore = driver.find_element(By.CSS_SELECTOR, '[data-testid="price-original"]').get_attribute('innerHTML').replace("<!-- -->", "").replace('&nbsp;','')
-            productPrice =  driver.find_element(By.CSS_SELECTOR, '[data-testid="price-value"]').get_attribute('innerHTML').replace("<!-- -->", "").replace('&nbsp;','')
-            payment = driver.find_element(By.CSS_SELECTOR, '[data-testid="installment"]').get_attribute('innerHTML').replace("<!-- -->", "").replace('&nbsp;','')
+            try:
+                productPriceBefore = driver.find_element(By.CSS_SELECTOR, '[data-testid="price-original"]').get_attribute('innerHTML').replace("<!-- -->", "").replace('&nbsp;','')
+                productPrice =  driver.find_element(By.CSS_SELECTOR, '[data-testid="price-value"]').get_attribute('innerHTML').replace("<!-- -->", "").replace('&nbsp;','')
+                payment = driver.find_element(By.CSS_SELECTOR, '[data-testid="installment"]').get_attribute('innerHTML').replace("<!-- -->", "").replace('&nbsp;','')
+            except Exception as error:
+                print("Error parsing price ", error)
 
         hti = Html2Image()
 
