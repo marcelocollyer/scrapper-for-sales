@@ -5,6 +5,7 @@ from telegram.ext import ApplicationBuilder, CommandHandler
 import magalu
 import natura
 import amazon
+import mercado_livre
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -20,6 +21,7 @@ def main():
     application.add_handler(CommandHandler('mag', magalu.handler))
     application.add_handler(CommandHandler('nat', natura.handler))
     application.add_handler(CommandHandler('ama', amazon.handler))
+    application.add_handler(CommandHandler('ml', mercado_livre.handler))
     
     application.run_polling()
 
