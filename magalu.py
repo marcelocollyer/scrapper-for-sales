@@ -68,7 +68,26 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         folder_path = folder_path.replace("\\", "\\\\")
 
-        html = """
+        # screenshot an HTML string (css is optional)
+        path = f'{today.timestamp()}.png'
+        hti = Html2Image(custom_flags=['--no-sandbox'])
+        html = getHTML(price_src, image_src,productTitle,folder_path, 'background_small', '1166')
+        hti.screenshot(html_str=html, save_as=path, size=(899, 1166))
+        await context.bot.send_photo(chat_id=update.effective_chat.id,filename=f"magalu.png",caption=f"🛍️🛒{productTitle}\n\n<s>{productPriceBefore}</s>\n{productPrice}🚨🚨🔥😱🏃🏻‍♀️\n💳 {payment}\n\n<a href='{url}'>🛒 CLIQUE AQUI PARA COMPRAR</a>\n\n<i>*Promoção sujeita a alteração a qualquer momento</i>",parse_mode='HTML',photo=open(f"{folder_path}/{today.timestamp()}.png", "rb"))
+
+        hti = Html2Image(custom_flags=['--no-sandbox'])
+        html = getHTML(price_src, image_src,productTitle,folder_path, 'background', '1599')
+        hti.screenshot(html_str=html, save_as=path, size=(899, 1599))
+        await context.bot.send_photo(chat_id=update.effective_chat.id,filename=f"magalu.png",photo=open(f"{folder_path}/{today.timestamp()}.png", "rb"))
+    except Exception as error:
+        print("Erro ao gerar imagem", error)
+        await context.bot.send_message(chat_id=update.effective_chat.id, text="Erro ao gerar imagem!")
+    finally:
+        deleteTempFiles(today.timestamp())
+        driver.quit()
+
+def getHTML(price_src, image_src, productTitle, folder_path, background_img_name, height):
+    html = """
         <!DOCTYPE html>
         <html lang="en">
             <head>
@@ -82,9 +101,9 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         
                 .internal-div {
                     margin: 0px 0px 0px 0px;
-                    height: 1166px;
-                    width: 899px;"""+ f"""
-                    background-image: url('{folder_path}/background_small.jpg');"""+"""
+                    """+ f"""height: {height}px;
+                    """+"""width: 899px;"""+ f"""
+                    background-image: url('{folder_path}/{background_img_name}.jpg');"""+"""
                 }
 
                 .product-div {
@@ -145,33 +164,21 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 }
             </style>"""
 
-        img_tag = ''
-        if price_src != '':
-            img_tag = f"<img src='{price_src}' class=product-img width='750px'>"
+    img_tag = ''
+    if price_src != '':
+        img_tag = f"<img src='{price_src}' class=product-img width='750px'>"
 
-        html += f"""
-            <body class="body">
-                <div class="internal-div">
-                <div class="product-div">
-                    <img src="{image_src}" alt="Product Image" class=product-img height="500">
-                    <h1 class="title">{productTitle}</h1>
-                </div>
-                <div class="price-div">
-                    <p class="price">{img_tag}</p>  
-                </div>
-                </div>
-            </body>
-        </html>"""
-
-        print(html)
-        # screenshot an HTML string (css is optional)
-        path = f'{today.timestamp()}.png'
-        hti = Html2Image(custom_flags=['--no-sandbox'])
-        hti.screenshot(html_str=html, save_as=path, size=(899, 1166))
-        await context.bot.send_photo(chat_id=update.effective_chat.id,filename=f"magalu.png",caption=f"🛍️🛒{productTitle}\n\n<s>{productPriceBefore}</s>\n{productPrice}🚨🚨🔥😱🏃🏻‍♀️\n💳 {payment}\n\n<a href='{url}'>🛒 CLIQUE AQUI PARA COMPRAR</a>\n\n<i>*Promoção sujeita a alteração a qualquer momento</i>",parse_mode='HTML',photo=open(f"{folder_path}/{today.timestamp()}.png", "rb"))
-    except Exception as error:
-        print("Erro ao gerar imagem", error)
-        await context.bot.send_message(chat_id=update.effective_chat.id, text="Erro ao gerar imagem!")
-    finally:
-        deleteTempFiles(today.timestamp())
-        driver.quit()
+    html += f"""
+        <body class="body">
+            <div class="internal-div">
+            <div class="product-div">
+                <img src="{image_src}" alt="Product Image" class=product-img height="500">
+                <h1 class="title">{productTitle}</h1>
+            </div>
+            <div class="price-div">
+                <p class="price">{img_tag}</p>  
+            </div>
+            </div>
+        </body>
+    </html>"""        
+    return html
