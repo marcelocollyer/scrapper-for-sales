@@ -5,6 +5,7 @@ Current implementations cover:
 * /mag - Magazine Luiza
 * /ama - Amazon
 * /nat - Natura
+* /ml  - Mercado Livre
 
 To run it:
 ```
