@@ -9,12 +9,12 @@ import mercado_livre
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.INFO
+    level=logging.DEBUG
 )
 
 def main():
 
-    bot_token = os.environ['TELEGRAM_BOT_TOKEN']
+    bot_token = '6976550644:AAFtPc1sp_qoQcZqIOdQpysqzFrXW_HyiEc'
 
     application = ApplicationBuilder().token(bot_token).build()
     

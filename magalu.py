@@ -51,10 +51,18 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         image_src = img.get_attribute('src')
 
         price_src = ''
+        productPriceBefore = ''
+        productPrice = ''
+        payment = ''
+
         if 'sp' not in update.message.text:
             element = driver.find_element(By.CSS_SELECTOR, '[data-testid="mod-productprice"]')
             element.screenshot(f'price-{today.timestamp()}.png')
             price_src = f'{folder_path}/price-{today.timestamp()}.png'
+
+            productPriceBefore = driver.find_element(By.CSS_SELECTOR, '[data-testid="price-original"]').get_attribute('innerHTML').replace("<!-- -->", "").replace('&nbsp;','')
+            productPrice =  driver.find_element(By.CSS_SELECTOR, '[data-testid="price-value"]').get_attribute('innerHTML').replace("<!-- -->", "").replace('&nbsp;','')
+            payment = driver.find_element(By.CSS_SELECTOR, '[data-testid="installment"]').get_attribute('innerHTML').replace("<!-- -->", "").replace('&nbsp;','')
 
         hti = Html2Image()
 
@@ -74,14 +82,14 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         
                 .internal-div {
                     margin: 0px 0px 0px 0px;
-                    height: 1599px;
+                    height: 1166px;
                     width: 899px;"""+ f"""
-                    background-image: url('{folder_path}/background.jpg');"""+"""
+                    background-image: url('{folder_path}/background_small.jpg');"""+"""
                 }
 
                 .product-div {
                     padding: 150px 5px 5px 5px;
-                    min-height: 760px;
+                    min-height: 680px;
                 }
 
                 .price-div {
@@ -159,8 +167,8 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # screenshot an HTML string (css is optional)
         path = f'{today.timestamp()}.png'
         hti = Html2Image(custom_flags=['--no-sandbox'])
-        hti.screenshot(html_str=html, save_as=path, size=(899, 1599))
-        await context.bot.send_photo(chat_id=update.effective_chat.id,filename='magalu.png',photo=open(path, "rb"))
+        hti.screenshot(html_str=html, save_as=path, size=(899, 1166))
+        await context.bot.send_photo(chat_id=update.effective_chat.id,filename=f"magalu.png",caption=f"🛍️🛒{productTitle}\n\n<s>{productPriceBefore}</s>\n{productPrice}🚨🚨🔥😱🏃🏻‍♀️\n💳 {payment}\n\n<a href='{url}'>🛒 CLIQUE AQUI PARA COMPRAR</a>\n\n<i>*Promoção sujeita a alteração a qualquer momento</i>",parse_mode='HTML',photo=open(f"{folder_path}/{today.timestamp()}.png", "rb"))
     except Exception as error:
         print("Erro ao gerar imagem", error)
         await context.bot.send_message(chat_id=update.effective_chat.id, text="Erro ao gerar imagem!")

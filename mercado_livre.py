@@ -43,20 +43,28 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         folder_path = os.getcwd().replace("\\", "\\\\")
 
-        WebDriverWait(driver, 100).until(EC.presence_of_element_located((By.XPATH, '/html/body/main/div[2]/div[3]/div[2]/div[1]/div[1]/div/div[1]/div[1]/div/div/div/span[1]/figure/img')))
-        element = driver.find_element(By.XPATH, '/html/body/main/div[2]/div[3]/div[2]/div[1]/div[1]/div/div[1]/div[1]/div/div/div/span[1]/figure/img')
+        WebDriverWait(driver, 100).until(EC.presence_of_element_located((By.CLASS_NAME, 'ui-pdp-gallery__figure')))
+        element = driver.find_element(By.CLASS_NAME, '/html/body/main/div[2]/div[3]/div[2]/div[1]/div[1]/div/div[1]/div[1]/div/div/div/span[1]/figure/img')
         element.screenshot(f'image-{today.timestamp()}.png')
         image_src = f'{folder_path}/image-{today.timestamp()}.png'
 
-        element = driver.find_element(By.XPATH, '/html/body/main/div[2]/div[3]/div[2]/div[1]/div[1]/div/div[1]/div[2]/div[1]/div/div[2]/h1')
-        productTitle = element.get_attribute('innerHTML')
-
+        productTitle = driver.find_element(By.XPATH, '/html/body/main/div[2]/div[3]/div[2]/div[1]/div[1]/div/div[1]/div[2]/div[1]/div/div[2]/h1').text
+        
         price_src = ''
+        productPrice = ''
+        productPriceBefore = ''
+        payment= ''
+
         try:
             if 'sp' not in update.message.text:
                 element = driver.find_element(By.CLASS_NAME, 'ui-pdp-price__main-container')
                 element.screenshot(f'price-{today.timestamp()}.png')
                 price_src = f'{folder_path}/price-{today.timestamp()}.png'
+
+                productPriceBefore = driver.find_element(By.XPATH, '//*[@id="ui-pdp-main-container"]/div[1]/div/div[1]/div[2]/div[3]/div[1]/span/s/span[2]').text
+                productPrice = driver.find_element(By.XPATH, '//*[@id="ui-pdp-main-container"]/div[1]/div/div[1]/div[2]/div[3]/div[1]/div[1]/span[1]/span/span[2]').text
+                payment = driver.find_element(By.XPATH, '//*[@id="ui-pdp-main-container"]/div[1]/div/div[1]/div[2]/div[3]/div[1]/div[2]').get_attribute('innerText').strip().replace('\n','')
+                
         except Exception as error:
             print("Error finding price", error)
 
@@ -76,9 +84,9 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         
                 .internal-div {
                     margin: 0px 0px 0px 0px;
-                    height: 1599px;
+                    height: 1166px;
                     width: 899px;"""+ f"""
-                    background-image: url("{folder_path}/background.jpg");"""+"""
+                    background-image: url("{folder_path}/background_small.jpg");"""+"""
                 }
 
                 .product-div {
@@ -142,7 +150,7 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         image_tag = ''
         if price_src != '':
-            image_tag = f"""<img src="{price_src}" class=product-img width="750px">"""
+            image_tag = f"""<img src="{price_src}" class=product-img width="650px">"""
 
         html += f"""
             <body class="body">
@@ -160,13 +168,16 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         </html>"""
 
         print(html)
+        text_file = open("output.html", "w")
+        text_file.write(html)
+        text_file.close()
         # screenshot an HTML string (css is optional)
         hti = Html2Image(custom_flags=['--no-sandbox'])
-        hti.screenshot(html_str=html, save_as=f'{today.timestamp()}.png', size=(899, 1599))
-        await context.bot.send_photo(chat_id=update.effective_chat.id,filename=f"{today}.png",photo=open(f"{folder_path}/{today.timestamp()}.png", "rb"))
+        hti.screenshot(html_str=html, save_as=f'{today.timestamp()}.png', size=(899, 1166))
+        await context.bot.send_photo(chat_id=update.effective_chat.id,filename=f"{today}.png",caption=f"🛍️✨{productTitle}\n\n<s>R${productPriceBefore}</s>\nR${productPrice}🚨🚨🔥😱🏃🏻‍♀️\n💳 {payment}\n\n<a href='{url}'>🛒 CLIQUE AQUI PARA COMPRAR 👉</a>\n\n<i>*Promoção sujeita a alteração a qualquer momento</i>",parse_mode='HTML',photo=open(f"{folder_path}/{today.timestamp()}.png", "rb"))
     except Exception as error:
         print("Erro ao gerar imagem", error)
         await context.bot.send_message(chat_id=update.effective_chat.id, text="Erro ao gerar imagem!")
     finally:
-        deleteTempFiles(today.timestamp())
+        #deleteTempFiles(today.timestamp())
         driver.quit()
