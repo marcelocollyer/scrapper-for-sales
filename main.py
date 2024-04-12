@@ -14,7 +14,7 @@ logging.basicConfig(
 
 def main():
 
-    bot_token = '6976550644:AAFtPc1sp_qoQcZqIOdQpysqzFrXW_HyiEc'
+    bot_token = os.environ['TELEGRAM_BOT_TOKEN']
 
     application = ApplicationBuilder().token(bot_token).build()
     
