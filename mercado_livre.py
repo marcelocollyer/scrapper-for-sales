@@ -168,5 +168,5 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         print("Erro ao gerar imagem", error)
         await context.bot.send_message(chat_id=update.effective_chat.id, text="Erro ao gerar imagem!")
     finally:
-        #deleteTempFiles(today.timestamp())
+        deleteTempFiles(today.timestamp())
         driver.quit()
