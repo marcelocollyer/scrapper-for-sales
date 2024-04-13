@@ -61,11 +61,21 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 element.screenshot(f'price-{today.timestamp()}.png')
                 price_src = f'{folder_path}/price-{today.timestamp()}.png'
 
-                productPriceBefore = driver.find_element(By.XPATH, '//*[@id="corePriceDisplay_desktop_feature_div"]/div[2]/span/span[1]').text.replace('\n','')
-                productPrice =  driver.find_element(By.XPATH, '//*[@id="corePriceDisplay_desktop_feature_div"]/div[1]/span[3]/span[2]/span[2]').text.replace('\n','')
-                productPriceFraction =  driver.find_element(By.XPATH, '//*[@id="corePriceDisplay_desktop_feature_div"]/div[1]/span[3]/span[2]/span[3]').text.replace('\n','')
-                productPrice += ',' + productPriceFraction
-                payment = driver.find_element(By.XPATH, '//*[@id="installmentCalculator_feature_div"]/span[1]').text.replace('\n','')
+                try:
+                    productPriceBefore = driver.find_element(By.XPATH, '//*[@id="corePriceDisplay_desktop_feature_div"]/div[2]/span/span[1]').text.replace('\n','')
+                except Exception as error:
+                    print("Error parsing previous price ", error)
+                try:                
+                    productPrice =  driver.find_element(By.XPATH, '//*[@id="corePriceDisplay_desktop_feature_div"]/div[1]/span[3]/span[2]/span[2]').text.replace('\n','')
+                    productPriceFraction =  driver.find_element(By.XPATH, '//*[@id="corePriceDisplay_desktop_feature_div"]/div[1]/span[3]/span[2]/span[3]').text.replace('\n','')
+                    productPrice += ',' + productPriceFraction
+                except Exception as error:
+                    print("Error parsing price ", error)    
+                try:    
+                    payment = driver.find_element(By.XPATH, '//*[@id="installmentCalculator_feature_div"]/span[1]').text.replace('\n','')
+                except Exception as error:
+                    print("Error parsing payment methods ", error)  
+
         except Exception as error:
             print("Error finding price", error)
 

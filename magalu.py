@@ -62,13 +62,17 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
             try:
                 productPriceBefore = driver.find_element(By.CSS_SELECTOR, '[data-testid="price-original"]').get_attribute('innerHTML').replace("<!-- -->", "").replace('&nbsp;','')
+            except Exception as error:
+                print("Error parsing previous price ", error)
+            try:                
                 productPrice =  driver.find_element(By.CSS_SELECTOR, '[data-testid="price-value"]').get_attribute('innerHTML').replace("<!-- -->", "").replace('&nbsp;','')
+            except Exception as error:
+                print("Error parsing price ", error)    
+            try:    
                 payment = driver.find_element(By.CSS_SELECTOR, '[data-testid="installment"]').get_attribute('innerHTML').replace("<!-- -->", "").replace('&nbsp;','')
             except Exception as error:
-                print("Error parsing price ", error)
-
-        hti = Html2Image()
-
+                print("Error parsing payment methods ", error)                
+        
         folder_path = folder_path.replace("\\", "\\\\")
 
         # screenshot an HTML string (css is optional)
