@@ -77,14 +77,15 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         path = f'{today.timestamp()}.png'
         hti = Html2Image(custom_flags=['--no-sandbox'])
+        html = getHTML(price_src, image_src,productTitle,folder_path, 'background', '1599')
+        hti.screenshot(html_str=html, save_as=path, size=(899, 1599))
+        await context.bot.send_photo(chat_id=update.effective_chat.id,filename=path,photo=open(path, "rb"))
+
+        hti = Html2Image(custom_flags=['--no-sandbox'])
         html = getHTML(price_src, image_src,productTitle,folder_path, 'background_small', '1166')
         hti.screenshot(html_str=html, save_as=path, size=(899, 1166))
         await context.bot.send_photo(chat_id=update.effective_chat.id,filename=path,caption=f"🛍️🛒{productTitle}\n\n<s>{productPriceBefore}</s>\nR${productPrice}🚨🚨🔥😱🏃🏻‍♀️\n💳 {payment}\n\n<a href='{url}'>🛒 CLIQUE AQUI PARA COMPRAR</a>\n\n<i>*Promoção sujeita a alteração a qualquer momento</i>",parse_mode='HTML',photo=open(f"{folder_path}/{today.timestamp()}.png", "rb"))
 
-        hti = Html2Image(custom_flags=['--no-sandbox'])
-        html = getHTML(price_src, image_src,productTitle,folder_path, 'background', '1599')
-        hti.screenshot(html_str=html, save_as=path, size=(899, 1599))
-        await context.bot.send_photo(chat_id=update.effective_chat.id,filename=path,photo=open(path, "rb"))
     except Exception as error:
         print("Erro ao gerar imagem", error)
         await context.bot.send_message(chat_id=update.effective_chat.id, text="Erro ao gerar imagem!")
