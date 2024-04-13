@@ -70,7 +70,7 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             except Exception as error:
                 print("Error parsing price ", error)    
             try:    
-                payment = driver.find_element(By.XPATH, '//*[@id="sticky-container"]/div[2]/div/div/div[2]/div/div[3]/div[2]').text.text.replace('\n','')
+                payment = driver.find_element(By.XPATH, '//*[@id="sticky-container"]/div[2]/div/div/div[2]/div/div[3]/div[2]').text.replace('\n','')
             except Exception as error:
                 print("Error parsing payment methods ", error)    
             
@@ -89,7 +89,7 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         print("Erro ao gerar imagem", error)
         await context.bot.send_message(chat_id=update.effective_chat.id, text="Erro ao gerar imagem!")
     finally:
-        #deleteTempFiles(today.timestamp())
+        deleteTempFiles(today.timestamp())
         driver.quit()
 
 def getHTML(price_src, image_src, productTitle, folder_path, background_img_name, height):
