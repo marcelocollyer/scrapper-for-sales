@@ -57,7 +57,6 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         productPrice = ''
         payment = ''
         price_path = ''
-
         
         try:
             productPriceBefore = driver.find_element(By.CSS_SELECTOR, '[data-testid="price-original"]').get_attribute('innerHTML').replace("<!-- -->", "").replace('&nbsp;','')
@@ -84,8 +83,7 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         hti = Html2Image(custom_flags=['--no-sandbox'])
         html = getHTML(image_path, price_path, folder_path, 'background', '1599')
         hti.screenshot(html_str=html, save_as=path, size=(899, 1599))
-        print(html)
-        await context.bot.send_photo(chat_id=update.effective_chat.id,filename=f"magalu.png",photo=open(f"{folder_path}/{today.timestamp()}.png", "rb"))
+        await context.bot.send_photo(chat_id=update.effective_chat.id,filename=f"magalu.png",caption=f"<a href='{productUrl}'>{productUrl}</a>",parse_mode='HTML',photo=open(f"{folder_path}/{today.timestamp()}.png", "rb"))
 
         hti = Html2Image(custom_flags=['--no-sandbox'])
         html = getHTML(image_path,price_path,folder_path, 'background_small', '1166')
