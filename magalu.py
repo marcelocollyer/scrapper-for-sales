@@ -15,10 +15,15 @@ def deleteTempFiles(date_time):
     else:
         print("The file does not exist")
 
-    if os.path.exists(f"price-{date_time}.png"):
-        os.remove(f"price-{date_time}.png")
+    if os.path.exists(f"product-{date_time}.png"):
+        os.remove(f"product-{date_time}.png")
     else:
         print("The file does not exist")
+
+    if os.path.exists(f"prices-{date_time}.png"):
+        os.remove(f"prices-{date_time}.png")
+    else:
+        print("The file does not exist")        
 
 async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id, text="Processando...")
@@ -30,61 +35,62 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         options.add_argument('--headless')
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
-        options.add_argument("--window-size=1920,1080")
+        options.add_argument("--window-size=1920,1400")
         driver = webdriver.Chrome(options=options)
 
         url = update.message.text.split()[1]
         driver.get(url)
 
-        try:
-            WebDriverWait(driver, 100).until(EC.presence_of_element_located((By.CLASS_NAME, 'text-button-cookie'))).click()
-            driver.find_element(By.CSS_SELECTOR, '[data-testid="button-message-box"]').click()
-        except Exception as error:
-            print("Error trying to click", error)
-
         folder_path = os.getcwd()
 
-        element = driver.find_element(By.CSS_SELECTOR, '[data-testid="heading-product-title"]')
-        productTitle = element.get_attribute('innerHTML')
+        productCode = driver.find_element(By.XPATH, '//*[@id="__next"]/div/main/section[2]/div[2]/span/span[1]').text.split(' ')[1]
+        imageHighRes = driver.find_element(By.CSS_SELECTOR, '[data-testid="image-selected-thumbnail"]').get_attribute('src')
+        
+        driver.get(f"https://www.magazinevoce.com.br/magazinelojapexincha/busca/{productCode}/")
 
-        img = driver.find_element(By.CSS_SELECTOR, '[data-testid="image-selected-thumbnail"]')
-        image_src = img.get_attribute('src')
-
-        price_src = ''
+        image_path = imageHighRes
+        
+        productUrl = driver.find_element(By.XPATH, '//*[@id="__next"]/div/main/section[4]/div[3]/div/ul/li/a').get_attribute('href')
+        productTitle = driver.find_element(By.XPATH, '//*[@id="__next"]/div/main/section[4]/div[3]/div/ul/li/a/div[3]/h2').text
+        
         productPriceBefore = ''
         productPrice = ''
         payment = ''
+        price_path = ''
 
-        if 'sp' not in update.message.text:
-            element = driver.find_element(By.CSS_SELECTOR, '[data-testid="mod-productprice"]')
-            element.screenshot(f'price-{today.timestamp()}.png')
-            price_src = f'{folder_path}/price-{today.timestamp()}.png'
-
-            try:
-                productPriceBefore = driver.find_element(By.CSS_SELECTOR, '[data-testid="price-original"]').get_attribute('innerHTML').replace("<!-- -->", "").replace('&nbsp;','')
-            except Exception as error:
-                print("Error parsing previous price ", error)
-            try:                
-                productPrice =  driver.find_element(By.CSS_SELECTOR, '[data-testid="price-value"]').get_attribute('innerHTML').replace("<!-- -->", "").replace('&nbsp;','')
-            except Exception as error:
-                print("Error parsing price ", error)    
-            try:    
-                payment = driver.find_element(By.CSS_SELECTOR, '[data-testid="installment"]').get_attribute('innerHTML').replace("<!-- -->", "").replace('&nbsp;','')
-            except Exception as error:
-                print("Error parsing payment methods ", error)                
+        
+        try:
+            productPriceBefore = driver.find_element(By.CSS_SELECTOR, '[data-testid="price-original"]').get_attribute('innerHTML').replace("<!-- -->", "").replace('&nbsp;','')
+        except Exception as error:
+            print("Error parsing previous price ", error)
+        try:                
+            productPrice =  driver.find_element(By.CSS_SELECTOR, '[data-testid="price-value"]').get_attribute('innerHTML').replace("<!-- -->", "").replace('&nbsp;','')
+        except Exception as error:
+            print("Error parsing price ", error)    
+        try:    
+            payment = driver.find_element(By.CSS_SELECTOR, '[data-testid="installment"]').get_attribute('innerHTML').replace("<!-- -->", "").replace('&nbsp;','')
+        except Exception as error:
+            print("Error parsing payment methods ", error)                
+        try:    
+            pricesElement = driver.find_element(By.CSS_SELECTOR, '[data-testid="product-card-content"]')
+            price_path = f'prices-{today.timestamp()}.png'
+            pricesElement.screenshot(price_path)
+        except Exception as error:
+            print("Error parsing prices ", error)
         
         folder_path = folder_path.replace("\\", "\\\\")
 
         path = f'{today.timestamp()}.png'
         hti = Html2Image(custom_flags=['--no-sandbox'])
-        html = getHTML(price_src, image_src,productTitle,folder_path, 'background', '1599')
+        html = getHTML(image_path, price_path, folder_path, 'background', '1599')
         hti.screenshot(html_str=html, save_as=path, size=(899, 1599))
+        print(html)
         await context.bot.send_photo(chat_id=update.effective_chat.id,filename=f"magalu.png",photo=open(f"{folder_path}/{today.timestamp()}.png", "rb"))
 
         hti = Html2Image(custom_flags=['--no-sandbox'])
-        html = getHTML(price_src, image_src,productTitle,folder_path, 'background_small', '1166')
+        html = getHTML(image_path,price_path,folder_path, 'background_small', '1166')
         hti.screenshot(html_str=html, save_as=path, size=(899, 1166))
-        await context.bot.send_photo(chat_id=update.effective_chat.id,filename=f"magalu.png",caption=f"🛍️🛒{productTitle}\n\n<s>{productPriceBefore}</s>\n{productPrice}🚨🚨🔥😱🏃🏻‍♀️\n💳 {payment}\n\n<a href='{url}'>🛒 CLIQUE AQUI PARA COMPRAR</a>\n\n<i>*Promoção sujeita a alteração a qualquer momento</i>",parse_mode='HTML',photo=open(f"{folder_path}/{today.timestamp()}.png", "rb"))
+        await context.bot.send_photo(chat_id=update.effective_chat.id,filename=f"magalu.png",caption=f"🛍️🛒{productTitle}\n\n<s>{productPriceBefore}</s>\n{productPrice}🚨🚨🔥😱🏃🏻‍♀️\n💳 {payment}\n\n<a href='{productUrl}'>🛒 CLIQUE AQUI PARA COMPRAR</a>\n\n<i>*Promoção sujeita a alteração a qualquer momento</i>",parse_mode='HTML',photo=open(f"{folder_path}/{today.timestamp()}.png", "rb"))
 
     except Exception as error:
         print("Erro ao gerar imagem", error)
@@ -93,7 +99,7 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         deleteTempFiles(today.timestamp())
         driver.quit()
 
-def getHTML(price_src, image_src, productTitle, folder_path, background_img_name, height):
+def getHTML(image_path, price_path, folder_path, background_img_name, height):
     html = """
         <!DOCTYPE html>
         <html lang="en">
@@ -167,23 +173,27 @@ def getHTML(price_src, image_src, productTitle, folder_path, background_img_name
                     display: block;
                     margin-left: auto;
                     margin-right: auto;
-                    max-width: 820px;
+                    max-width: 767px;
+                    height: 545px;
+                }
+
+                .price-img {
+                    /* Background pattern from Toptal Subtle Patterns */
+                    display: block;
+                    margin-left: auto;
+                    margin-right: auto;
+                    max-width: 767px;
+                    padding-top: 25px;
+                    height: 400px;
                 }
             </style>"""
-
-    img_tag = ''
-    if price_src != '':
-        img_tag = f"<img src='{price_src}' class=product-img width='750px'>"
 
     html += f"""
         <body class="body">
             <div class="internal-div">
             <div class="product-div">
-                <img src="{image_src}" alt="Product Image" class=product-img height="500">
-                <h1 class="title">{productTitle}</h1>
-            </div>
-            <div class="price-div">
-                <p class="price">{img_tag}</p>  
+                <img src="{image_path}" class="product-img">
+                <img src="{folder_path}/{price_path}" class="price-img">
             </div>
             </div>
         </body>

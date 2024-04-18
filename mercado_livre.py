@@ -53,7 +53,7 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         productPrice = ''
         payment = ''
         
-        if 'sp' not in update.message.text:
+        if ' sp' not in update.message.text[-3:]:
             element = driver.find_element(By.CLASS_NAME, 'ui-pdp-price__main-container')
             element.screenshot(f'price-{today.timestamp()}.png')
             price_src = f'{folder_path}/price-{today.timestamp()}.png'

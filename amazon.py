@@ -56,7 +56,7 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         payment = ''
 
         try:
-            if 'sp' not in update.message.text:
+            if ' sp' not in update.message.text[-3:]:
                 element = driver.find_element(By.XPATH, '//*[@id="corePriceDisplay_desktop_feature_div"]')
                 element.screenshot(f'price-{today.timestamp()}.png')
                 price_src = f'{folder_path}/price-{today.timestamp()}.png'
