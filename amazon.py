@@ -85,7 +85,7 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         hti = Html2Image(custom_flags=['--no-sandbox'])
         html = getHTML(price_src, image_src,productTitle,folder_path, 'background', '1599')
         hti.screenshot(html_str=html, save_as=path, size=(899, 1599))
-        await context.bot.send_photo(chat_id=update.effective_chat.id,filename=f"{today}.png",photo=open(f"{folder_path}/{today.timestamp()}.png", "rb"))
+        await context.bot.send_photo(chat_id=update.effective_chat.id,filename=f"{today}.png",caption=f"<a href='{url}'>{url}</a>",parse_mode='HTML',photo=open(f"{folder_path}/{today.timestamp()}.png", "rb"))
 
         hti = Html2Image(custom_flags=['--no-sandbox'])
         html = getHTML(price_src, image_src,productTitle,folder_path, 'background_small', '1166')

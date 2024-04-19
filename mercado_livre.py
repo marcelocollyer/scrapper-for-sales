@@ -40,8 +40,7 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         folder_path = os.getcwd().replace("\\", "\\\\")
 
-        WebDriverWait(driver, 100).until(EC.presence_of_element_located((By.XPATH, '/html/body/main/div[2]/div[3]/div[2]/div[1]/div[1]/div/div[1]/div[1]/div/div/div/span[1]/figure/img')))
-        element = driver.find_element(By.XPATH, '/html/body/main/div[2]/div[3]/div[2]/div[1]/div[1]/div/div[1]/div[1]/div/div/div/span[1]/figure/img')
+        element = WebDriverWait(driver, 100).until(EC.presence_of_element_located((By.XPATH, '/html/body/main/div[2]/div[3]/div[2]/div[1]/div[1]/div/div[1]/div[1]/div/div/div/span[1]/figure/img')))
         element.screenshot(f'image-{today.timestamp()}.png')
         image_src = f'{folder_path}/image-{today.timestamp()}.png'
 
@@ -75,7 +74,7 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         hti = Html2Image(custom_flags=['--no-sandbox'])
         html = getHTML(price_src, image_src,productTitle,folder_path, 'background', '1599')
         hti.screenshot(html_str=html, save_as=path, size=(899, 1599))
-        await context.bot.send_photo(chat_id=update.effective_chat.id,filename=path,photo=open(f"{folder_path}/{path}", "rb"))
+        await context.bot.send_photo(chat_id=update.effective_chat.id,filename=path,caption=f"<a href='{url}'>{url}</a>",parse_mode='HTML',photo=open(f"{folder_path}/{path}", "rb"))
 
         hti = Html2Image(custom_flags=['--no-sandbox'])
         html = getHTML(price_src, image_src,productTitle,folder_path, 'background_small', '1166')
@@ -108,10 +107,16 @@ def getHTML(price_src, image_src, productTitle, folder_path, background_img_name
                     """+"""width: 899px;"""+ f"""
                     background-image: url('{folder_path}/{background_img_name}.jpg');"""+"""
                 }
+                
                 .product-div {
-                    padding: 150px 5px 5px 5px;
-                    min-height: 680px;
+                """
+    smallBackground = background_img_name == 'background_small'
+    html +=    f"""
+                    padding: {90 if smallBackground else 150}px 5px 5px 5px;
+                    min-height: 680px;"""
+    html +=     """                   
                 }
+                  
                 .price-div {
                     
                     box-sizing: border-box;
