@@ -27,6 +27,8 @@ RUN apt -f -y install \
     && dpkg -i google-chrome-stable_current_amd64.deb \
     && rm google-chrome-stable_current_amd64.deb
 
+RUN pip install Flask
+
 RUN apt-get clean autoclean \
     && apt-get autoremove --yes \
     && rm -rf /var/lib/{apt,dpkg,cache,log}/    
