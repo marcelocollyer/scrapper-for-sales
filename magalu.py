@@ -7,7 +7,9 @@ from html2image import Html2Image
 from telegram import Update
 from telegram.ext import ContextTypes
 import os
+import time
 from datetime import datetime
+import magalu_bulk
 
 def deleteTempFiles(date_time):
     if os.path.exists(f"{date_time}.png"):
@@ -37,6 +39,10 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         options.add_argument('--disable-dev-shm-usage')
         options.add_argument("--window-size=1920,1400")
         driver = webdriver.Chrome(options=options)
+
+        if update.message.text.startswith(("/mag ofertas")):
+            await magalu_bulk.sendDailyPromo(driver, update, context)
+            return 
 
         url = update.message.text.split()[1]
         driver.get(url)
@@ -197,3 +203,4 @@ def getHTML(image_path, price_path, folder_path, background_img_name, height):
         </body>
     </html>"""        
     return html
+
