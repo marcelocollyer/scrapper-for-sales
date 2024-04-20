@@ -8,7 +8,6 @@ from telegram import Update
 from telegram.ext import ContextTypes
 import os
 from datetime import datetime
-import time
 
 def deleteTempFiles(date_time):
     if os.path.exists(f"{date_time}.png"):
@@ -36,19 +35,19 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         options.add_argument('--headless')
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
-        options.add_argument("--window-size=1920,1400")
         driver = webdriver.Chrome(options=options)
 
         url = update.message.text.split()[1]
         driver.get(url)
 
         folder_path = os.getcwd().replace("\\", "\\\\")
-        
-        element = WebDriverWait(driver, 100).until(EC.presence_of_element_located((By.XPATH, '//*[@id="sticky-container"]/div[2]/div/div/div[1]/div[1]/div[2]')))
+
+        WebDriverWait(driver, 100).until(EC.presence_of_element_located((By.ID, 'landingImage')))
+        element = driver.find_element(By.XPATH, '//*[@id="landingImage"]')
         element.screenshot(f'image-{today.timestamp()}.png')
         image_src = f'{folder_path}/image-{today.timestamp()}.png'
 
-        element = driver.find_element(By.XPATH, '//*[@id="sticky-container"]/div[2]/div/div/div[2]/div/h1')
+        element = driver.find_element(By.XPATH, '//*[@id="productTitle"]')
         productTitle = element.get_attribute('innerHTML')
 
         price_src = ''
@@ -56,35 +55,42 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         productPrice = ''
         payment = ''
 
-        if ' sp' not in update.message.text[-3:]:
-            element = driver.find_element(By.XPATH, '//*[@id="sticky-container"]/div[2]/div/div/div[2]/div/div[3]')
-            element.screenshot(f'price-{today.timestamp()}.png')
-            price_src = f'{folder_path}/price-{today.timestamp()}.png'
+        try:
+            if ' sp' not in update.message.text[-3:]:
+                element = driver.find_element(By.XPATH, '//*[@id="corePriceDisplay_desktop_feature_div"]')
+                element.screenshot(f'price-{today.timestamp()}.png')
+                price_src = f'{folder_path}/price-{today.timestamp()}.png'
 
-            try:
-                productPriceBefore = driver.find_element(By.XPATH, '//*[@id="sticky-container"]/div[2]/div/div/div[2]/div/div[3]/div[1]/p').text.replace('\n','')
-            except Exception as error:
-                print("Error parsing previous price ", error)
-            try:                
-                productPrice =  driver.find_element(By.XPATH, '//*[@id="sticky-container"]/div[2]/div/div/div[2]/div/div[3]/div[1]/div').text.replace('\n','')
-            except Exception as error:
-                print("Error parsing price ", error)    
-            try:    
-                payment = driver.find_element(By.XPATH, '//*[@id="sticky-container"]/div[2]/div/div/div[2]/div/div[3]/div[2]').text.replace('\n','')
-            except Exception as error:
-                print("Error parsing payment methods ", error)    
-            
+                try:
+                    productPriceBefore = driver.find_element(By.XPATH, '//*[@id="corePriceDisplay_desktop_feature_div"]/div[2]/span/span[1]').text.replace('\n','')
+                except Exception as error:
+                    print("Error parsing previous price ", error)
+                try:                
+                    productPrice =  driver.find_element(By.XPATH, '//*[@id="corePriceDisplay_desktop_feature_div"]/div[1]/span[3]/span[2]/span[2]').text.replace('\n','')
+                    productPriceFraction =  driver.find_element(By.XPATH, '//*[@id="corePriceDisplay_desktop_feature_div"]/div[1]/span[3]/span[2]/span[3]').text.replace('\n','')
+                    productPrice += ',' + productPriceFraction
+                except Exception as error:
+                    print("Error parsing price ", error)    
+                try:    
+                    payment = driver.find_element(By.XPATH, '//*[@id="installmentCalculator_feature_div"]/span[1]').text.replace('\n','')
+                except Exception as error:
+                    print("Error parsing payment methods ", error)  
+
+        except Exception as error:
+            print("Error finding price", error)
+
+        hti = Html2Image()
 
         path = f'{today.timestamp()}.png'
         hti = Html2Image(custom_flags=['--no-sandbox'])
         html = getHTML(price_src, image_src,productTitle,folder_path, 'background', '1599')
         hti.screenshot(html_str=html, save_as=path, size=(899, 1599))
-        await context.bot.send_photo(chat_id=update.effective_chat.id,filename=path,caption=f"<a href='{url}'>{url}</a>",parse_mode='HTML',photo=open(path, "rb"))
+        await context.bot.send_photo(chat_id=update.effective_chat.id,filename=f"{today}.png",caption=f"<a href='{url}'>{url}</a>",parse_mode='HTML',photo=open(f"{folder_path}/{today.timestamp()}.png", "rb"))
 
         hti = Html2Image(custom_flags=['--no-sandbox'])
         html = getHTML(price_src, image_src,productTitle,folder_path, 'background_small', '1166')
         hti.screenshot(html_str=html, save_as=path, size=(899, 1166))
-        await context.bot.send_photo(chat_id=update.effective_chat.id,filename=path,caption=f"🛍️🛒{productTitle}\n\n<s>{productPriceBefore}</s>\nR${productPrice}🚨🚨🔥😱🏃🏻‍♀️\n💳 {payment}\n\n<a href='{url}'>🛒 CLIQUE AQUI PARA COMPRAR</a>\n\n<i>*Promoção sujeita a alteração a qualquer momento</i>",parse_mode='HTML',photo=open(f"{folder_path}/{today.timestamp()}.png", "rb"))
+        await context.bot.send_photo(chat_id=update.effective_chat.id,filename=f"magalu.png",caption=f"🛍️🛒{productTitle}\n\n<s>{productPriceBefore}</s>\nR${productPrice}🚨🚨🔥😱🏃🏻‍♀️\n💳 {payment}\n\n<a href='{url}'>🛒 CLIQUE AQUI PARA COMPRAR</a>\n\n<i>*Promoção sujeita a alteração a qualquer momento</i>",parse_mode='HTML',photo=open(f"{folder_path}/{today.timestamp()}.png", "rb"))
 
     except Exception as error:
         print("Erro ao gerar imagem", error)
@@ -94,7 +100,6 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         driver.quit()
 
 def getHTML(price_src, image_src, productTitle, folder_path, background_img_name, height):
-
     html = """
         <!DOCTYPE html>
         <html lang="en">
@@ -111,7 +116,7 @@ def getHTML(price_src, image_src, productTitle, folder_path, background_img_name
                     margin: 0px 0px 0px 0px;
                     """+ f"""height: {height}px;
                     """+"""width: 899px;"""+ f"""
-                    background-image: url('{folder_path}/{background_img_name}.jpg');"""+"""
+                    background-image: url('{folder_path}/image/{background_img_name}.jpg');"""+"""
                 }
 
                 .product-div {
@@ -152,10 +157,11 @@ def getHTML(price_src, image_src, productTitle, folder_path, background_img_name
                     margin-left: auto;
                     margin-right: auto;
                     text-align: center;
-                    max-width: 650px;
+                    max-width: 700px;
                     font-family: serif;
                     font-size: 45px;
                     text-align: left;
+                    color: #4a4a4a;
                     color: #4a4a4a;
                     overflow: hidden;
                     display: -webkit-box;
@@ -172,9 +178,9 @@ def getHTML(price_src, image_src, productTitle, folder_path, background_img_name
                 }
             </style>"""
 
-    img_tag = ''
+    image_tag = ''
     if price_src != '':
-        img_tag = f"<img src='{price_src}' class=product-img width='750px'>"
+        image_tag = f"""<img src="{price_src}" class=product-img width="750px">"""
 
     html += f"""
         <body class="body">
@@ -184,10 +190,10 @@ def getHTML(price_src, image_src, productTitle, folder_path, background_img_name
                 <h1 class="title">{productTitle}</h1>
             </div>
             <div class="price-div">
-                <p class="price">{img_tag}</p>  
+                <p class="price">{image_tag}</p>  
             </div>
             </div>
 
         </body>
     </html>"""
-    return html        
+    return html

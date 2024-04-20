@@ -44,7 +44,7 @@ async def sendDailyPromo(driver, update: Update, context: ContextTypes.DEFAULT_T
         data = {
             'image_path': folder_path + '/' + original_image_path,
             'height': '1599',
-            'background_img_name': folder_path + '/background'
+            'background_img_name': folder_path + '/image/background'
         }
         html = template.render(data)
         hti = Html2Image(custom_flags=['--no-sandbox'])
@@ -72,7 +72,7 @@ async def sendDailyPromo(driver, update: Update, context: ContextTypes.DEFAULT_T
         data = {
             'image_path': folder_path + '/' + original_image_path,
             'height': '1166',
-            'background_img_name': folder_path + '/background_small'
+            'background_img_name': folder_path + '/image/background_small'
         }
         html = template.render(data)
         hti.screenshot(html_str=html, save_as=image_path, size=(899, 1166))

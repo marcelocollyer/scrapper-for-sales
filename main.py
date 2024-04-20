@@ -3,10 +3,10 @@ from telegram.ext import ApplicationBuilder, CommandHandler
 from flask import Flask, jsonify
 import threading
 from telegram.ext import ApplicationBuilder, CommandHandler
-import magalu
-import natura
-import amazon
-import mercado_livre
+from scrapper import magalu
+from scrapper import natura
+from scrapper import amazon
+from scrapper import mercado_livre
 from flask import Flask, jsonify
 
 app = Flask(__name__)
