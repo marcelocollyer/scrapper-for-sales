@@ -66,7 +66,7 @@ async def sendDailyPromo(driver, update: Update, context: ContextTypes.DEFAULT_T
         #access_token = os.environ.get('INSTAGRAM_ACCESS_TOKEN')
         #instagram_business_account_id = os.environ.get('INSTAGRAM_BUSINESS_ACCOUNT_ID')
         #upload_file_to_s3(photo_url, 'dicemedice', 'story.jpg')
-        #post_to_facebook(instagram_business_account_id, access_token, text, product_url)
+        #post_to_facebook(instagram_business_account_id, access_token, caption, product_url)
 
         # Sends the normal background type image
         data = {

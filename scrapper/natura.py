@@ -8,7 +8,6 @@ from telegram import Update
 from telegram.ext import ContextTypes
 import os
 from datetime import datetime
-import time
 
 def deleteTempFiles(date_time):
     if os.path.exists(f"{date_time}.png"):
