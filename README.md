@@ -2,10 +2,11 @@ This python project is designed to return instagram stories compatible images ac
 
 Current implementations cover:
 
-* /mag - Magazine Luiza
-* /ama - Amazon
-* /nat - Natura
-* /ml  - Mercado Livre
+* /ama         - Amazon
+* /nat         - Natura
+* /ml          - Mercado Livre
+* /mag         - Magazine Luiza
+* /mag ofertas - Magazine Luiza
 
 To run it:
 ```
