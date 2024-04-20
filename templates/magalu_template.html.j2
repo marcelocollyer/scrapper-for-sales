@@ -11,9 +11,9 @@
                 
         .internal-div {
             margin: 0px 0px 0px 0px;
-            height: 1599px;
+            height: {{height}}px;
             width: 899px;
-            background-image: url('/Users/marcelocollyer/Documents/workspace/Personal/sales-scrapper-py/background.jpg');
+            background-image: url('{{background_img_name}}.jpg');
         }
 
         .product-div {
@@ -88,8 +88,8 @@
 <body class="body">
     <div class="internal-div">
     <div class="product-div">
-        <img src="/Users/marcelocollyer/Documents/workspace/Personal/sales-scrapper-py/https://a-static.mlcdn.com.br/800x560/smartphone-samsung-galaxy-s23-256gb-preto-5g-8gb-ram-61-cam-tripla-selfie-12mp/magazineluiza/232854100/d21120069fca69fc9edbeeac7a0d9ec8.jpg" class="product-img">
-        <img src="" class="price-img">
+        <img src="{{image_path}}" class="product-img">
+        <img src="{{price_path}}" class="price-img">
     </div>
     </div>
 </body>

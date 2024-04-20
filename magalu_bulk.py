@@ -21,7 +21,7 @@ async def sendDailyPromo(driver, update: Update, context: ContextTypes.DEFAULT_T
     folder_path = os.getcwd()
     template_loader = jinja2.FileSystemLoader('.')
     template_env = jinja2.Environment(loader=template_loader)
-    template = template_env.get_template('magalu_bulk_template.html')
+    template = template_env.get_template('templates/magalu_bulk_template.html.j2')
     
     # Navigates to promotion website
     driver.get(os.environ.get('OFERTAS_URL'))
@@ -47,7 +47,6 @@ async def sendDailyPromo(driver, update: Update, context: ContextTypes.DEFAULT_T
             'background_img_name': folder_path + '/background'
         }
         html = template.render(data)
-        print(html)
         hti = Html2Image(custom_flags=['--no-sandbox'])
         hti.screenshot(html_str=html, save_as=image_path, size=(899, 1599))
         await context.bot.send_photo(chat_id=update.effective_chat.id,filename=f"{image_path}",caption=caption,parse_mode='HTML',photo=open(f"{image_path}", "rb"))    
@@ -76,7 +75,6 @@ async def sendDailyPromo(driver, update: Update, context: ContextTypes.DEFAULT_T
             'background_img_name': folder_path + '/background_small'
         }
         html = template.render(data)
-        print(html)
         hti.screenshot(html_str=html, save_as=image_path, size=(899, 1166))
         await context.bot.send_photo(chat_id=update.effective_chat.id,filename=f"magalu.png",caption=caption,parse_mode='HTML',photo=open(f"{image_path}", "rb"))
         
