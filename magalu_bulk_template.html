@@ -12,9 +12,9 @@
 
     .internal-div {
         margin: 0px 0px 0px 0px;
-        height: "1166"px;
+        height: {{ height }}px;
         width: 899px;
-        background-image: url("/Users/marcelocollyer/Documents/workspace/Personal/sales-scrapper-py/background_small.jpg");
+        background-image: url("{{ background_img_name }}.jpg");
     }
 
     .product-div {
@@ -78,7 +78,7 @@
 <body class="body">
     <div class="internal-div">
         <div class="product-div">
-            <img src="/Users/marcelocollyer/Documents/workspace/Personal/sales-scrapper-py/original-image-1.png" class="product-img">
+            <img src="{{ image_path }}" class="product-img">
         </div>
     </div>
 </body>
