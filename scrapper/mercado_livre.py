@@ -69,7 +69,6 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             'height': '1599',
             'background_img_name': 'image/background'
         })  
-        print(html)
         hti.screenshot(html_str=html, save_as=path, size=(899, 1599))
         caption = f"<a href='{url}'>{url}</a>"
         await context.bot.send_photo(chat_id=update.effective_chat.id,filename=path,caption=caption,parse_mode='HTML',photo=open(f"{folder_path}/{path}", "rb"))
@@ -84,7 +83,6 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             'height': '1166',
             'background_img_name': 'image/background_small'
         })
-        print(html)
         hti.screenshot(html_str=html, save_as=path, size=(899, 1166))
         caption = f"🛍️🛒{productTitle}\n\n<s>{productPriceBefore}</s>\n{productPrice}🚨🚨🔥😱🏃🏻‍♀️\n💳 {payment}\n\n<a href='{url}'>🛒 CLIQUE AQUI PARA COMPRAR</a>\n\n<i>*Promoção sujeita a alteração a qualquer momento</i>"
         await context.bot.send_photo(chat_id=update.effective_chat.id,filename=f"magalu.png",caption=caption,parse_mode='HTML',photo=open(f"{folder_path}/{today.timestamp()}.png", "rb"))
