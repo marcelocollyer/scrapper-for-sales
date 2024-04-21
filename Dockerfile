@@ -21,13 +21,15 @@ RUN apt update -y \
     && apt install wget -y \
     && wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
     
+# This is a workaround to have chrome installed.
+# It needs to try to install and fail
+# Then apt will know what dependencies it needs to install
+# Once they are installed, dpkg is able to install chrome properly    
 RUN dpkg --force-all -i google-chrome-stable_current_amd64.deb || exit 0;
 
 RUN apt -f -y install \
     && dpkg -i google-chrome-stable_current_amd64.deb \
     && rm google-chrome-stable_current_amd64.deb
-
-RUN pip install Flask
 
 RUN apt-get clean autoclean \
     && apt-get autoremove --yes \
