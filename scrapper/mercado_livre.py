@@ -185,3 +185,4 @@ def getHTML(price_src, image_src, productTitle, folder_path, background_img_name
         </body>
     </html>"""
     return html
+

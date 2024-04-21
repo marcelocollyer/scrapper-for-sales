@@ -54,10 +54,12 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         productUrl = driver.find_element(By.XPATH, '//*[@id="__next"]/div/main/section[4]/div[3]/div/ul/li/a').get_attribute('href')
         productTitle = driver.find_element(By.XPATH, '//*[@id="__next"]/div/main/section[4]/div[3]/div/ul/li/a/div[3]/h2').text
         
-        # Continue to extract values
-        productPriceBefore = get_value(driver, '[data-testid="price-original"]')
-        productPrice = get_value(driver, '[data-testid="price-value"]')
-        payment = get_value(driver, '[data-testid="installment"]')
+        # if sp has been provided as parameter, no need to find the prices, otherwise...
+        if ' sp' not in update.message.text[-3:]:
+            # Continue to extract values
+            productPriceBefore = get_value(driver, '[data-testid="price-original"]')
+            productPrice = get_value(driver, '[data-testid="price-value"]')
+            payment = get_value(driver, '[data-testid="installment"]')
         
         # Takes a screenshot of the price information
         price_path = capture_prices(driver, today)
@@ -67,26 +69,24 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         # generates and sends to telegram the normal size image
         hti = Html2Image(custom_flags=['--no-sandbox'])
-        data = {
+        html = template.render({
             'image_path': image_path,
             'price_path': folder_path + '/' + price_path,
             'height': '1599',
             'background_img_name': folder_path + '/image/background'
-        }
-        html = template.render(data)
+        })
         hti.screenshot(html_str=html, save_as=path, size=(899, 1599))
         caption = f"<a href='{productUrl}'>{productUrl}</a>"
         await context.bot.send_photo(chat_id=update.effective_chat.id,filename=f"magalu.png",caption=caption,parse_mode='HTML',photo=open(f"{folder_path}/{today.timestamp()}.png", "rb"))
 
         # generates and sends to telegram the small size image
         hti = Html2Image(custom_flags=['--no-sandbox'])
-        data = {
+        html = template.render({
             'image_path': image_path,
             'price_path': folder_path + '/' + price_path,
             'height': '1166',
             'background_img_name': folder_path + '/image/background_small'
-        }
-        html = template.render(data)
+        })
         hti.screenshot(html_str=html, save_as=path, size=(899, 1166))
         caption = f"🛍️🛒{productTitle}\n\n<s>{productPriceBefore}</s>\n{productPrice}🚨🚨🔥😱🏃🏻‍♀️\n💳 {payment}\n\n<a href='{productUrl}'>🛒 CLIQUE AQUI PARA COMPRAR</a>\n\n<i>*Promoção sujeita a alteração a qualquer momento</i>"
         await context.bot.send_photo(chat_id=update.effective_chat.id,filename=f"magalu.png",caption=caption,parse_mode='HTML',photo=open(f"{folder_path}/{today.timestamp()}.png", "rb"))
