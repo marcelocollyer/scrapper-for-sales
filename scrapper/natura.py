@@ -80,7 +80,7 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         })
         print(html)
         hti.screenshot(html_str=html, save_as=path, size=(899, 1166))
-        caption = f"🛍️🛒{productTitle}\n\n<s>{productPriceBefore}</s>\n{productPrice}🚨🚨🔥😱🏃🏻‍♀️\n💳 {payment}\n\n<a href='{url}'>🛒 CLIQUE AQUI PARA COMPRAR</a>\n\n<i>*Promoção sujeita a alteração a qualquer momento</i>"
+        caption = f"🛍️🛒{productTitle}\n<s>{productPriceBefore}</s>\n{productPrice}🚨🚨🔥😱🏃🏻‍♀️\n💳 {payment}\n\n<a href='{url}'>🛒 CLIQUE AQUI PARA COMPRAR</a>\n\n<i>*Promoção sujeita a alteração a qualquer momento</i>"
         await context.bot.send_photo(chat_id=update.effective_chat.id,filename=path,caption=caption,parse_mode='HTML',photo=open(f"{folder_path}/{today.timestamp()}.png", "rb"))
 
     except Exception as error:
