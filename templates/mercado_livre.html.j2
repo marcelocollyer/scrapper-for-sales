@@ -11,15 +11,17 @@
                 
         .internal-div {
             margin: 0px 0px 0px 0px;
-            height: 1166px;
+            height: {{ height }}px;
             width: 899px;
-            background-image: url('/Users/marcelocollyer/Documents/workspace/Personal/sales-scrapper-py/image/background_small.jpg');
+            background-image: url('{{folder_path}}/{{ background_img_name }}.jpg');
         }
         
         .product-div {
-            
+            {% if background_img_name == 'image/background_small' %}
             padding: 90px 5px 5px 5px;
-            
+            {% elif background_img_name == 'image/background' %}
+            padding: 150px 5px 5px 5px;
+            {% endif %}
             min-height: 680px;
         }
               
@@ -74,19 +76,19 @@
             display: block;
             margin-left: 50px;
             margin-right: auto;
-            max-width: 530px;
+            max-width: 590px;
         }
     </style>
     <body class="body">
         <div class="internal-div">
             <div class="product-div">
-                <img src="/Users/marcelocollyer/Documents/workspace/Personal/sales-scrapper-py/image-1713680043.826768.png" alt="Product Image" class="product-img" height="500">
-                <h1 class="title">Samsung Galaxy A15 4G Dual SIM 128 GB Azul escuro 4 GB RAM</h1>
+                <img src="{{ image_src }}" alt="Product Image" class="product-img" height="500">
+                <h1 class="title">{{ productTitle }}</h1>
             </div>
             <div class="price-div">
-                
-                <p class="price"><img src="/Users/marcelocollyer/Documents/workspace/Personal/sales-scrapper-py/price-1713680043.826768.png" class="price-img" width="750px"></p>
-                
+                {% if price_src %}
+                <p class="price"><img src="{{ price_src }}" class="price-img" width="750px"></p>
+                {% endif %}
             </div>
         </div>
     </body>

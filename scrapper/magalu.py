@@ -34,7 +34,7 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         folder_path = os.getcwd()
         template_loader = jinja2.FileSystemLoader('.')
         template_env = jinja2.Environment(loader=template_loader)
-        template = template_env.get_template('templates/magalu_template.html.j2')
+        template = template_env.get_template('templates/magalu.html.j2')
 
         # Gets the url from the request
         url = get_url(update)

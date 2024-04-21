@@ -21,7 +21,7 @@ async def sendDailyPromo(driver, update: Update, context: ContextTypes.DEFAULT_T
     folder_path = os.getcwd()
     template_loader = jinja2.FileSystemLoader('.')
     template_env = jinja2.Environment(loader=template_loader)
-    template = template_env.get_template('templates/magalu_bulk_template.html.j2')
+    template = template_env.get_template('templates/magalu_bulk.html.j2')
     
     # Navigates to promotion website
     driver.get(os.environ.get('OFERTAS_URL'))
