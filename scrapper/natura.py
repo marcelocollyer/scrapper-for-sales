@@ -19,9 +19,9 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         # Config driver        
         options = Options()
-        options.add_argument('--headless')
-        options.add_argument('--no-sandbox')
-        options.add_argument('--disable-dev-shm-usage')
+        #options.add_argument('--headless')
+        #options.add_argument('--no-sandbox')
+        #options.add_argument('--disable-dev-shm-usage')
         options.add_argument("--window-size=1920,1400")
         driver = webdriver.Chrome(options=options)
 
@@ -65,7 +65,6 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             'background_img_name': folder_path + '/image/background', 
             'height': '1599'
         })
-        print(html)
         hti.screenshot(html_str=html, save_as=path, size=(899, 1599))
         caption = f"<a href='{url}'>{url}</a>"
         await context.bot.send_photo(chat_id=update.effective_chat.id,filename=path,caption=caption,parse_mode='HTML',photo=open(path, "rb"))
@@ -78,7 +77,6 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             'background_img_name': folder_path + '/image/background_small', 
             'height': '1166'
         })
-        print(html)
         hti.screenshot(html_str=html, save_as=path, size=(899, 1166))
         caption = f"🛍️🛒{productTitle}\n<s>{productPriceBefore}</s>\n{productPrice}🚨🚨🔥😱🏃🏻‍♀️\n💳 {payment}\n\n<a href='{url}'>🛒 CLIQUE AQUI PARA COMPRAR</a>\n\n<i>*Promoção sujeita a alteração a qualquer momento</i>"
         await context.bot.send_photo(chat_id=update.effective_chat.id,filename=path,caption=caption,parse_mode='HTML',photo=open(f"{folder_path}/{today.timestamp()}.png", "rb"))
