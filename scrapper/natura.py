@@ -19,9 +19,9 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         # Config driver        
         options = Options()
-        #options.add_argument('--headless')
-        #options.add_argument('--no-sandbox')
-        #options.add_argument('--disable-dev-shm-usage')
+        options.add_argument('--headless')
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-dev-shm-usage')
         options.add_argument("--window-size=1920,1400")
         driver = webdriver.Chrome(options=options)
 
