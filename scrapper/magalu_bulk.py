@@ -64,9 +64,13 @@ async def sendDailyPromo(driver, update: Update, context: ContextTypes.DEFAULT_T
         # TODO uncomment this once IG business account gets created
         # Upload file to s3 as with public access and uses the public url to post on instagram stories
         #access_token = os.environ.get('INSTAGRAM_ACCESS_TOKEN')
+        #instagram_api_url = os.environ.get('INSTAGRAM_API_URL')
+        #bucket_name = driver.get(os.environ.get('S3_IMAGE_BUCKET'))
         #instagram_business_account_id = os.environ.get('INSTAGRAM_BUSINESS_ACCOUNT_ID')
-        #upload_file_to_s3(photo_url, 'dicemedice', 'story.jpg')
-        #post_to_facebook(instagram_business_account_id, access_token, caption, product_url)
+
+        #full_instagram_url = render_url_with_variable(instagram_business_account_id, instagram_api_url)
+        #upload_file_to_s3(photo_url, bucket_name, 'story.jpg')
+        #post_to_facebook(full_instagram_url, access_token, caption, product_url)
 
         # Sends the normal background type image
         data = {
@@ -91,10 +95,10 @@ def get_element_text_or_innerhtml(element, css_selector):
         print(f"Error parsing {css_selector}: {error}")
         return ''
 
-def post_to_facebook(instagram_business_account_id, access_token, text, product_url):
+def post_to_facebook(instagram_url, access_token, text, product_url):
     
     # Construct the API request
-    url = f"https://graph.facebook.com/v19.0/{instagram_business_account_id}/media"
+    render_url_with_variable()
     headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
     
     data = {
@@ -110,7 +114,7 @@ def post_to_facebook(instagram_business_account_id, access_token, text, product_
     }
     
     # Send the request
-    response = requests.post(url, headers=headers, json=data)
+    response = requests.post(f"{instagram_url}/media", headers=headers, json=data)
     
     if response.status_code == 200:
         print("Part A of the post successful!")
@@ -119,7 +123,7 @@ def post_to_facebook(instagram_business_account_id, access_token, text, product_
         creation_id = json.loads(response.text)["id"]
         
         # Construct the API request for publishing the media
-        url = f"https://graph.facebook.com/v19.0/{instagram_business_account_id}/media_publish"
+        url = f"{instagram_url}/media_publish"
         params = {"creation_id": creation_id}
         
         # Send the request
@@ -161,3 +165,15 @@ def deleteTempFiles(index):
         os.remove(f"image-{index}.png")
     else:
         print("The file does not exist")
+
+def render_url_with_variable(instagram_business_account_id, url):
+    # Define the template with the placeholder
+    template_string = url
+
+    # Create a Template object
+    template = jinja2.Template(template_string)
+
+    # Render the template with the actual Instagram Business Account ID
+    rendered_url = template.render(instagram_business_account_id=instagram_business_account_id)
+
+    return rendered_url        
