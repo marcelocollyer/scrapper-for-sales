@@ -10,6 +10,7 @@ import os
 import jinja2
 from datetime import datetime
 from scrapper import magalu_bulk
+from scrapper import magalu_code
 
 async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id, text="Processando...")
@@ -29,6 +30,17 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if update.message.text.startswith(("/mag ofertas")):
             await magalu_bulk.sendDailyPromo(driver, update, context)
             return 
+        
+        url_part = update.message.text.split(" ")[1]
+        if is_integer(url_part):
+            url = os.environ.get("MAGALU_STORE_SEARCH_URL")
+            template = jinja2.Template(url)
+            url = template.render(productCode=url_part)
+            await magalu_code.send_by_product_code(url, driver, update, context)
+            return 
+        else:
+            # Gets the usual url from the request
+            url = get_url(update)
 
         # initializing jinja
         folder_path = os.getcwd()
@@ -36,8 +48,7 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         template_env = jinja2.Environment(loader=template_loader)
         template = template_env.get_template('templates/magalu.html.j2')
 
-        # Gets the url from the request
-        url = get_url(update)
+        #if the second parameter is a product code, land into a different url
         driver.get(url)
 
         # gets the product code and high resolution image path
@@ -130,6 +141,13 @@ def get_url(update):
     except Exception as error:
         print("Error parsing URL: ", error)
         return ''
+
+def is_integer(s):
+    try:
+        int(s)
+        return True
+    except ValueError:
+        return False
 
 def deleteTempFiles(date_time):
     if os.path.exists(f"{date_time}.png"):

@@ -24,7 +24,8 @@ async def sendDailyPromo(driver, update: Update, context: ContextTypes.DEFAULT_T
     template = template_env.get_template('templates/magalu_bulk.html.j2')
     
     # Navigates to promotion website
-    driver.get(os.environ.get('OFERTAS_URL'))
+    url = os.environ.get('OFERTAS_URL')
+    driver.get(url)
     
     # Scrap the product list
     products = WebDriverWait(driver, 100).until(EC.presence_of_element_located(((By.XPATH, '//*[@id="__next"]/div/main/section[4]/div[2]/div/ul'))))
