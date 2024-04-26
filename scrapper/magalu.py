@@ -31,16 +31,12 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await magalu_bulk.sendDailyPromo(driver, update, context)
             return 
         
-        url_part = update.message.text.split(" ")[1]
-        if is_integer(url_part):
-            url = os.environ.get("MAGALU_STORE_SEARCH_URL")
-            template = jinja2.Template(url)
-            url = template.render(productCode=url_part)
-            await magalu_code.send_by_product_code(url, driver, update, context)
+        if not update.message.text.startswith("/mag http"):
+            product_codes = update.message.text.split()[1:]
+            await magalu_code.send_by_product_code(product_codes, driver, update, context)
             return 
-        else:
-            # Gets the usual url from the request
-            url = get_url(update)
+        
+        url = get_url(update)
 
         # initializing jinja
         folder_path = os.getcwd()
