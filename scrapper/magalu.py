@@ -92,9 +92,10 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             'image_path': image_path,
             'price_path': folder_path + '/' + price_path,
             'height': '1166',
+            'width': '1166',
             'background_img_name': folder_path + '/image/background_small'
         })
-        hti.screenshot(html_str=html, save_as=path, size=(899, 1166))
+        hti.screenshot(html_str=html, save_as=path, size=(1166, 1166))
         caption = f"🛍️🛒{productTitle}\n\n<s>{productPriceBefore}</s>\n{productPrice}🚨🚨🔥😱🏃🏻‍♀️\n💳 {payment}\n\n<a href='{productUrl}'>🛒 CLIQUE AQUI PARA COMPRAR</a>\n\n<i>*Promoção sujeita a alteração a qualquer momento</i>"
         await context.bot.send_photo(chat_id=update.effective_chat.id,filename=f"magalu.png",caption=caption,parse_mode='HTML',photo=open(f"{folder_path}/{today.timestamp()}.png", "rb"))
 
