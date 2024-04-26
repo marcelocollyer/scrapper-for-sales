@@ -46,6 +46,7 @@ async def send_by_product_code(product_codes, driver, update: Update, context: C
         data = {
             'image_path': folder_path + '/' + original_image_path,
             'height': '1599',
+            'padding': '150',
             'background_img_name': folder_path + '/image/background'
         }
         html = template.render(data)
@@ -68,6 +69,7 @@ async def send_by_product_code(product_codes, driver, update: Update, context: C
             'image_path': folder_path + '/' + original_image_path,
             'height': '1166',
             'width': '1166',
+            'padding': '110',
             'background_img_name': folder_path + '/image/background_small'
         }
         html = template.render(data)

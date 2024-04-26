@@ -80,6 +80,7 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             'image_path': image_path,
             'price_path': folder_path + '/' + price_path,
             'height': '1599',
+            'padding': '150',
             'background_img_name': folder_path + '/image/background'
         })
         hti.screenshot(html_str=html, save_as=path, size=(899, 1599))
@@ -93,6 +94,7 @@ async def handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             'price_path': folder_path + '/' + price_path,
             'height': '1166',
             'width': '1166',
+            'padding': '110',
             'background_img_name': folder_path + '/image/background_small'
         })
         hti.screenshot(html_str=html, save_as=path, size=(1166, 1166))
